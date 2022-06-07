@@ -1,11 +1,6 @@
 <!-- eslint-disable prettier/prettier -->
 <template>
   <div>
-    <!-- <v-app-bar>
-      <v-toolbar-title>
-        <h2>Home</h2>
-      </v-toolbar-title>
-    </v-app-bar> -->
     <v-card class="my-2" style="margin: 50px 40px 100px 40px">
       <v-row align="center">
         <v-col cols="4" align-self="center">
