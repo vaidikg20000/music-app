@@ -1,6 +1,8 @@
+/* eslint-disable prettier/prettier */
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
+import addSong from "../views/AddSong.vue"
 
 Vue.use(VueRouter);
 
@@ -19,6 +21,11 @@ const routes = [
     component: () =>
       import(/* webpackChunkName: "about" */ "../views/About.vue"),
   },
+  {
+    path:"/addSong",
+    name:"Add Song",
+    component: addSong,
+  }
 ];
 
 const router = new VueRouter({
