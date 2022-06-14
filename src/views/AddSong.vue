@@ -42,7 +42,7 @@
           </template>
           <v-date-picker v-model="songDate" scrollable>
             <v-spacer></v-spacer>
-            <v-btn text color="primary" @click="modal = false"> Cancel </v-btn>
+            <v-btn text color="primary" @click="dateModal = false"> Cancel </v-btn>
             <v-btn text color="primary" @click="$refs.dialog.save(songDate)">
               OK
             </v-btn>
@@ -55,6 +55,7 @@
         <v-file-input
           label="Add Image"
           prepend-icon="mdi-camera"
+          accept="image/*"
           dense
           class="mx-4"
         ></v-file-input>
@@ -76,7 +77,7 @@
       </v-col>
     </v-row>
     <v-row>
-      <v-col cols="1" class="mx-4"><v-btn dark>Cancel</v-btn></v-col>
+      <v-col cols="1" class="mx-4"><v-btn dark @click="redirectBack()">Cancel</v-btn></v-col>
       <v-col cols="1"><v-btn>save</v-btn></v-col>
     </v-row>
     <AddArtist :showDialog="showDialog" @closeDialog="(data)=>showDialog=data"/>
@@ -102,6 +103,9 @@ export default {
     openDialog() {
       this.showDialog = true;
     },
+    redirectBack(){
+      this.$router.push('/');
+    }
   },
 };
 </script>
