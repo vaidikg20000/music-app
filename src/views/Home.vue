@@ -40,6 +40,7 @@
   </div>
 </template>
 <script>
+import { isAuthenticated } from "../../utils/checkAuth";
 export default {
   name: "Homepage",
   data() {
@@ -93,14 +94,25 @@ export default {
     };
   },
   mounted() {
-   fetch("http://localhost:3000/")
+    fetch("http://localhost:3000/")
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
+
         return data;
       })
       .catch((err) => console.log(err));
     // console.log(res);
+  },
+  async created() {
+    const token = localStorage.getItem("token");
+    let authenticated = false;
+    if (token) {
+      authenticated = await isAuthenticated();
+    }
+    if (!authenticated || !token) {
+      this.$router.push({ path: "/login" });
+    }
   },
 };
 </script>

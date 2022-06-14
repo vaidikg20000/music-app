@@ -3,6 +3,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import addSong from "../views/AddSong.vue"
+import login from "../views/Login.vue"
 
 Vue.use(VueRouter);
 
@@ -16,6 +17,11 @@ const routes = [
     path:"/addSong",
     name:"Add Song",
     component: addSong,
+  },
+  {
+    path:"/login",
+    name:"Login",
+    component: login,
   }
 ];
 
