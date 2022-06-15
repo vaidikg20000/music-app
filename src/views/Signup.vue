@@ -6,15 +6,23 @@
           <v-flex xs12 sm8 md4>
             <v-card class="elevation-12">
               <v-toolbar dark color="primary">
-                <v-toolbar-title>Login form</v-toolbar-title>
+                <v-toolbar-title>Signup form</v-toolbar-title>
               </v-toolbar>
               <v-card-text>
-                <v-form ref="form" v-model="loginForm">
+                <v-form ref="form" v-model="signupForm">
                   <v-text-field
-                    prepend-icon="mdi-account"
+                    prepend-icon="mdi-email"
                     name="email"
                     label="Email"
                     type="email"
+                    v-model.trim="email"
+                    required
+                  ></v-text-field>
+                  <v-text-field
+                    prepend-icon="mdi-account"
+                    name="username"
+                    label="Username"
+                    type="text"
                     v-model.trim="username"
                     required
                   ></v-text-field>
@@ -27,11 +35,20 @@
                     v-model.trim="password"
                     required
                   ></v-text-field>
+                  <v-text-field
+                    id="password"
+                    prepend-icon="mdi-lock"
+                    name="confirm_password"
+                    label="Confirm Password"
+                    type="password"
+                    v-model.trim="confirmPassword"
+                    required
+                  ></v-text-field>
                 </v-form>
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" to="/">Login</v-btn>
+                <v-btn color="primary" to="/">Signup</v-btn>
               </v-card-actions>
             </v-card>
           </v-flex>
@@ -40,26 +57,16 @@
     </v-content>
   </v-app>
 </template>
-
 <script>
-import { isAuthenticated } from "../../utils/checkAuth";
 export default {
-  name: "Login",
+  name: "Signup",
   data() {
     return {
-      loginForm:'',
-      username:'',
-      password:'',
-      email:"",
+      confirmPassword: "",
+      username: "",
+      password: "",
+      email: "",
     };
-  },
-  created() {
-    if (localStorage.getItem("token")) {
-      const authenticated = isAuthenticated();
-      if (authenticated) {
-        this.$router.push({ path: "/" });
-      }
-    }
   },
 };
 </script>
