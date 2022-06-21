@@ -15,6 +15,7 @@
                     name="email"
                     label="Email"
                     type="email"
+                    :rules="formRules.emailRules"
                     v-model.trim="email"
                     required
                   ></v-text-field>
@@ -22,6 +23,7 @@
                     prepend-icon="mdi-account"
                     name="username"
                     label="Username"
+                    :rules="formRules.nameRules"
                     type="text"
                     v-model.trim="username"
                     required
@@ -32,16 +34,18 @@
                     name="password"
                     label="Password"
                     type="password"
+                    :rules="formRules.passwordRules"
                     v-model.trim="password"
                     required
                   ></v-text-field>
                   <v-text-field
-                    id="password"
+                    id="confirmPassword"
                     prepend-icon="mdi-lock"
                     name="confirm_password"
                     label="Confirm Password"
                     type="password"
                     v-model.trim="confirmPassword"
+                    :rules="formRules.confirmPasswordRules"
                     required
                   ></v-text-field>
                 </v-form>
@@ -66,6 +70,30 @@ export default {
       username: "",
       password: "",
       email: "",
+      formRules: {
+        nameRules: [
+          (v) => !!v || "Name is required",
+          (v) =>
+            (v && v.length <= 10) || "Name must be less than 10 characters",
+        ],
+        emailRules: [
+          (v) => !!v || "E-mail is required",
+          (v) =>
+            /^(([^<>()[\]\\.,;:\s@']+(\.[^<>()\\[\]\\.,;:\s@']+)*)|('.+'))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+              v
+            ) || "E-mail must be valid",
+        ],
+        passwordRules: [
+          (v) => !!v || "Password is required",
+          (v) =>
+            /(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,}/.test(v) ||
+            "Password must contain at least lowercase letter, one number, a special character and one uppercase letter",
+        ],
+        confirmPasswordRules: [
+          (v) => !!v || "Password is required",
+          (v) => v === this.password || "Passwords Doesn't match",
+        ],
+      },
     };
   },
 };
