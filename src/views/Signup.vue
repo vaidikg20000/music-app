@@ -52,7 +52,12 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" to="/">Signup</v-btn>
+                <v-btn
+                  @click="saveItems()"
+                  color="primary"
+                  :disabled="!signupForm"
+                  >Signup</v-btn
+                >
               </v-card-actions>
             </v-card>
           </v-flex>
@@ -66,6 +71,7 @@ export default {
   name: "Signup",
   data() {
     return {
+      signupForm: false,
       confirmPassword: "",
       username: "",
       password: "",
@@ -95,6 +101,29 @@ export default {
         ],
       },
     };
+  },
+  methods: {
+    //redirect to home
+    saveItems() {
+      // e.preventDefault();
+      fetch("http://localhost:3000/auth/signup", {
+        method: "POST",
+        body: JSON.stringify({
+          username: this.username,
+          email: this.email,
+          password: this.password,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log(data);
+          return data;
+        })
+        .catch((err) => console.log(err));
+    },
   },
 };
 </script>
