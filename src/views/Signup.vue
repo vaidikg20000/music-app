@@ -64,14 +64,36 @@
         </v-layout>
       </v-container>
     </v-content>
+    <div class="text-center ma-2">
+      <v-snackbar v-model="snackbar.visible" :color="snackbar.color">
+        {{ snackbar.errMsg }}
+        <template v-slot:action="{ attrs }">
+          <v-btn
+            color="white"
+            text
+            v-bind="attrs"
+            @click="snackbar.visible = false"
+          >
+            Close
+          </v-btn>
+        </template>
+      </v-snackbar>
+    </div>
   </v-app>
 </template>
 <script>
+import { isAuthenticated } from "../../utils/checkAuth";
+
 export default {
   name: "Signup",
   data() {
     return {
       signupForm: false,
+      snackbar: {
+        visible: false,
+        errMsg: "",
+        color: "",
+      },
       confirmPassword: "",
       username: "",
       password: "",
@@ -97,7 +119,7 @@ export default {
         ],
         confirmPasswordRules: [
           (v) => !!v || "Password is required",
-          (v) => v === this.password || "Passwords Doesn't match",
+          (v) => v === this.password || "Passwords do not match",
         ],
       },
     };
@@ -117,13 +139,34 @@ export default {
           "Content-Type": "application/json",
         },
       })
-        .then((response) => response.json())
-        .then((data) => {
-          console.log(data);
-          return data;
+        .then(async (response) => {
+          console.log(response);
+          if (response.status === 409) {
+            this.snackbar.errMsg = "User already exists";
+            this.snackbar.color = "error";
+            this.snackbar.visible = true;
+          } else if (response.status === 200) {
+            const res = await response.json();
+            localStorage.setItem("token", res.token);
+            this.$router.push("/");
+          }
         })
         .catch((err) => console.log(err));
     },
+  },
+  async created() {
+    const token = localStorage.getItem("token");
+    let authenticated = false;
+    if (token) {
+      authenticated = await isAuthenticated();
+      console.log(authenticated);
+    }
+    // if (!authenticated || !token) {
+    //   this.$router.push({ path: "/login" });
+    // } 
+    if (authenticated) {
+      this.$router.push({ path: "/" });
+    }
   },
 };
 </script>

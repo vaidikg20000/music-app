@@ -111,7 +111,7 @@ export default {
       authenticated = await isAuthenticated();
     }
     if (!authenticated || !token) {
-      // this.$router.push({ path: "/login" });
+      this.$router.push({ path: "/signup" });
     }
   },
 };
