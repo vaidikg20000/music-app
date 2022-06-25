@@ -15,7 +15,7 @@
                     name="email"
                     label="Email"
                     type="email"
-                    v-model.trim="username"
+                    v-model.trim="email"
                     :rules="formRules.emailRules"
                     required
                   ></v-text-field>
@@ -33,13 +33,28 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer></v-spacer>
-                <v-btn color="primary" to="/">Login</v-btn>
+                <v-btn color="primary" @click="saveUser" :disabled="!loginForm">Login</v-btn>
               </v-card-actions>
             </v-card>
           </v-flex>
         </v-layout>
       </v-container>
     </v-content>
+    <div class="text-center ma-2">
+      <v-snackbar v-model="snackbar.visible" :color="snackbar.color">
+        {{ snackbar.errMsg }}
+        <template v-slot:action="{ attrs }">
+          <v-btn
+            color="white"
+            text
+            v-bind="attrs"
+            @click="snackbar.visible = false"
+          >
+            Close
+          </v-btn>
+        </template>
+      </v-snackbar>
+    </div>
   </v-app>
 </template>
 
@@ -49,10 +64,15 @@ export default {
   name: "Login",
   data() {
     return {
-      loginForm: "",
+      loginForm: false,
       username: "",
       password: "",
       email: "",
+      snackbar: {
+        visible: false,
+        errMsg: "",
+        color: "",
+      },
       formRules: {
         emailRules: [
           (v) => !!v || "E-mail is required",
@@ -69,6 +89,33 @@ export default {
         ],
       },
     };
+  },
+  methods: {
+    saveUser(){
+      fetch("http://localhost:3000/auth/login", {
+        method: "POST",
+        body: JSON.stringify({
+          email: this.email,
+          password: this.password,
+        }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then(async (response) => {
+          console.log(response);
+          if (response.status === 401) {
+            this.snackbar.errMsg = "User Email or Password does not match";
+            this.snackbar.color = "error";
+            this.snackbar.visible = true;
+          } else if (response.status === 200) {
+            const res = await response.json();
+            localStorage.setItem("token", res.token);
+            this.$router.push("/");
+          }
+        })
+        .catch((err) => console.log(err));
+    },
   },
   created() {
     if (localStorage.getItem("token")) {

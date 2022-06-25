@@ -6,7 +6,6 @@ async function isAuthenticated() {
     },
     method: "GET",
   });
-  console.log(res);
   const parseResponse = await res.json();
   if (parseResponse === true) {
     return true;

@@ -159,7 +159,7 @@ export default {
     let authenticated = false;
     if (token) {
       authenticated = await isAuthenticated();
-      console.log(authenticated);
+      // console.log(authenticated);
     }
     // if (!authenticated || !token) {
     //   this.$router.push({ path: "/login" });
