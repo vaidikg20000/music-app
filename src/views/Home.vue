@@ -38,6 +38,10 @@
         <template v-slot:item.date_of_release="{ item }">
           {{ moment(item.date_of_release).format("LL") }}
         </template>
+        <template v-slot:item.ratings="{ item }">
+          {{ item.ratings }} ⭐
+        </template>
+        
       </v-data-table>
     </v-card>
     <v-card style="margin: 10px 40px 10px 40px">
