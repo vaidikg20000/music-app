@@ -8,7 +8,7 @@
         </v-card-title>
         <v-card-text>
           <v-container>
-            <v-form v-model="artistForm">
+            <v-form v-model="artistForm" ref="artistForm">
               <v-row>
                 <v-col>
                   <v-text-field
@@ -64,7 +64,7 @@
                 </v-col>
               </v-row>
               <v-col>
-                <v-textarea label="Bio" :value="postBody.bio"> </v-textarea>
+                <v-textarea label="Bio" v-model="postBody.bio"> </v-textarea>
               </v-col>
             </v-form>
           </v-container>
@@ -86,6 +86,21 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <div class="text-center ma-2">
+      <v-snackbar v-model="snackbar.visible" :color="snackbar.color">
+        {{ snackbar.errMsg }}
+        <template v-slot:action="{ attrs }">
+          <v-btn
+            color="white"
+            text
+            v-bind="attrs"
+            @click="snackbar.visible = false"
+          >
+            Close
+          </v-btn>
+        </template>
+      </v-snackbar>
+    </div>
   </v-row>
 </template>
 <script>
@@ -96,6 +111,11 @@ export default {
     dialog: false,
     artistForm: false,
     menu: false,
+    snackbar: {
+      visible: false,
+      errMsg: "",
+      color: "",
+    },
     formRules: {
       artistsRules: [(v) => !!v || "Artists Name is required"],
       dateRules: [(v) => !!v || "Date is required"],
@@ -108,19 +128,16 @@ export default {
   }),
   methods: {
     closeDialog() {
-      this.postBody.artistName = "";
-      this.postBody.birthDate = "";
-      this.postBody.bio = "";
+      this.$refs.artistForm.reset();
       this.showDialog = false;
       this.$emit("closeDialog", this.showDialog);
     },
     saveArtist() {
-      console.log(this.postBody);
       const token = localStorage.getItem("token");
       fetch("http://localhost:3000/songs/artists/add", {
         method: "POST",
         body: JSON.stringify({
-          artistName: this.postBody.artistName,
+          artist_name: this.postBody.artistName,
           birthDate: this.postBody.birthDate,
           bio: this.postBody.bio,
         }),
@@ -130,12 +147,14 @@ export default {
         },
       })
         .then(async (response) => {
-          console.log(response);
+          let res = await response.json();
           if (response.status === 200) {
-            const res = await response.json();
+            this.$emit("updateArtists", true);
             this.closeDialog();
-
-            console.log(res);
+          } else if (response.status === 409) {
+            this.snackbar.visible = true;
+            this.snackbar.color = "red";
+            this.snackbar.errMsg = res;
           }
         })
         .catch((err) => console.log(err));

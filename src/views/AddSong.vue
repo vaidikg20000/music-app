@@ -49,7 +49,11 @@
               <v-btn text color="primary" @click="dateModal = false">
                 Cancel
               </v-btn>
-              <v-btn text color="primary" @click="$refs.dialog.save(postBody.songDate)">
+              <v-btn
+                text
+                color="primary"
+                @click="$refs.dialog.save(postBody.songDate)"
+              >
                 OK
               </v-btn>
             </v-date-picker>
@@ -66,7 +70,7 @@
             class="mx-4"
             required
             :rules="formRules.imageRules"
-            v-model.trim="postBody.image"
+            @change="imageCallback"
           ></v-file-input>
         </v-col>
       </v-row>
@@ -76,6 +80,8 @@
             :items="artistsItems"
             v-model.trim="postBody.artistsName"
             label="Select Artists"
+            item-text="artist_name"
+            item-value="artist_id"
             class="mx-4"
             multiple
             prepend-icon="mdi-account"
@@ -92,16 +98,35 @@
       <v-col cols="1" class="mx-4"
         ><v-btn dark @click="redirectBack()">Cancel</v-btn></v-col
       >
-      <v-col cols="1"><v-btn :disabled="!songForm" @click="saveNewSong">save</v-btn></v-col>
+      <v-col cols="1"
+        ><v-btn :disabled="!songForm" @click="saveNewSong">save</v-btn></v-col
+      >
     </v-row>
     <AddArtist
       :showDialog="showDialog"
       @closeDialog="(data) => (showDialog = data)"
+      @updateArtists="fetchArtists(payload)"
     />
+    <div class="text-center ma-2">
+      <v-snackbar v-model="snackbar.visible" :color="snackbar.color">
+        {{ snackbar.errMsg }}
+        <template v-slot:action="{ attrs }">
+          <v-btn
+            color="white"
+            text
+            v-bind="attrs"
+            @click="snackbar.visible = false"
+          >
+            Close
+          </v-btn>
+        </template>
+      </v-snackbar>
+    </div>
   </div>
 </template>
 <script>
 import AddArtist from "../components/AddArtist";
+import { imageBase64 } from "../../utils/helper";
 export default {
   name: "addSong",
   components: {
@@ -112,9 +137,14 @@ export default {
       songName: "",
       dateModal: false,
       songDate: null,
-      artistsItems: ["weeknd", "travis"],
+      artistsItems: [],
       showDialog: false,
       songForm: false,
+      snackbar: {
+        visible: false,
+        errMsg: "",
+        color: "",
+      },
       formRules: {
         songnameRules: [(v) => !!v || "Name is required"],
         dateRules: [(v) => !!v || "Date is required"],
@@ -123,7 +153,7 @@ export default {
           (v) => (v && v.length > 0) || "Artists Name is required",
         ],
       },
-      postBody:{
+      postBody: {
         songName: "",
         songDate: null,
         image: "",
@@ -138,9 +168,66 @@ export default {
     redirectBack() {
       this.$router.push("/");
     },
-    saveNewSong(){
-      console.log(this.postBody);
-    }
+    // getUrl(image) {
+    //   try{
+    //     return URL.createObjectURL(image);        
+    //   } 
+    //   catch(_){
+    //     return image;
+    //   }
+    // },
+
+    // executed when image is added
+    async imageCallback(image) {
+      if (!image) {
+        this.postBody.image = null;
+      }
+      this.postBody.image = await imageBase64(image);
+    },
+
+    async saveNewSong() {
+      const token = localStorage.getItem("token");
+      fetch("http://localhost:3000/songs/add", {
+        method: "POST",
+        body: JSON.stringify(this.postBody),
+        headers: {
+          "Content-Type": "application/json",
+          token: token,
+        },
+      })
+        .then(async (response) => {
+          let res = await response.json();
+          if (response.status === 200) {
+            this.snackbar.visible = true;
+            this.snackbar.color = "green";
+            this.snackbar.errMsg = "Song added successfully";
+            // console.log(res);
+          } else if (response.status === 409) {
+            this.snackbar.visible = true;
+            this.snackbar.color = "red";
+            this.snackbar.errMsg = res;
+          }
+        })
+        .catch((err) => console.log(err));
+    },
+    // eslint-disable-next-line no-unused-vars
+    fetchArtists(payload) {
+      //api call
+      const token = localStorage.getItem("token");
+      fetch("http://localhost:3000/songs/artists/all", {
+        method: "GET",
+        headers: {
+          // "Content-Type": "application/json",
+          token: token,
+        },
+      }).then(async (response) => {
+        let res = await response.json();
+        this.artistsItems = res;
+      });
+    },
+  },
+  created() {
+    this.fetchArtists();
   },
 };
 </script>

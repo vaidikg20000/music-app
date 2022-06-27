@@ -125,9 +125,7 @@ export default {
     };
   },
   methods: {
-    //redirect to home
     saveItems() {
-      // e.preventDefault();
       fetch("http://localhost:3000/auth/signup", {
         method: "POST",
         body: JSON.stringify({
@@ -140,7 +138,6 @@ export default {
         },
       })
         .then(async (response) => {
-          console.log(response);
           if (response.status === 409) {
             this.snackbar.errMsg = "User already exists";
             this.snackbar.color = "error";
@@ -159,11 +156,7 @@ export default {
     let authenticated = false;
     if (token) {
       authenticated = await isAuthenticated();
-      // console.log(authenticated);
     }
-    // if (!authenticated || !token) {
-    //   this.$router.push({ path: "/login" });
-    // } 
     if (authenticated) {
       this.$router.push({ path: "/" });
     }
