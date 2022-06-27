@@ -35,6 +35,18 @@
                 <v-spacer></v-spacer>
                 <v-btn color="primary" @click="saveUser" :disabled="!loginForm">Login</v-btn>
               </v-card-actions>
+              <div
+                style="
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                "
+              >
+                <p style="">
+                  New User
+                  <router-link to="/signup">Signup here</router-link>
+                </p>
+              </div>
             </v-card>
           </v-flex>
         </v-layout>

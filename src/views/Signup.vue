@@ -59,6 +59,18 @@
                   >Signup</v-btn
                 >
               </v-card-actions>
+              <div
+                style="
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+                "
+              >
+                <p style="">
+                  Existing user
+                  <router-link to="/login">Login here</router-link>
+                </p>
+              </div>
             </v-card>
           </v-flex>
         </v-layout>
