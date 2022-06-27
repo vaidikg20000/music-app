@@ -23,35 +23,53 @@
       </v-row>
       <v-data-table
         :headers="songsHeaders"
+        :items="songsItems"
         hide-default-footer
         disable-pagination
       >
+        <template v-slot:item.image="{ item }">
+          <img
+            :src="getUrl(item.image)"
+            alt="artwork image"
+            height="100px"
+            width="100px"
+          />
+        </template>
+        <template v-slot:item.date_of_release="{ item }">
+          {{ moment(item.date_of_release).format("LL") }}
+        </template>
       </v-data-table>
     </v-card>
     <v-card style="margin: 10px 40px 10px 40px">
       <v-card-title>Top 10 Artists</v-card-title>
       <v-data-table
         :headers="artistsHeaders"
+        :items="artistsItems"
         hide-default-footer
         disable-pagination
       >
+        <template v-slot:item.dob="{ item }">
+          {{ moment(item.dob).format("LL") }}
+        </template>
       </v-data-table>
     </v-card>
   </div>
 </template>
 <script>
 import { isAuthenticated } from "../../utils/checkAuth";
+import moment from "moment";
 export default {
   name: "Homepage",
   data() {
     return {
       search: "",
+      moment: moment,
       songsHeaders: [
         {
           text: "Artwork",
           align: "start",
           sortable: false,
-          value: "imageURL",
+          value: "image",
         },
         {
           text: "Song",
@@ -61,7 +79,7 @@ export default {
         {
           text: "Date of Release",
           align: "start",
-          value: "date_release",
+          value: "date_of_release",
         },
         {
           text: "Artists",
@@ -71,19 +89,19 @@ export default {
         {
           text: "Rate",
           align: "start",
-          value: "rate",
+          value: "ratings",
         },
       ],
       artistsHeaders: [
         {
           text: "Artists",
           align: "start",
-          value: "artists",
+          value: "artist_name",
         },
         {
-          text: "date",
+          text: "Date",
           align: "start",
-          value: "date_birth",
+          value: "dob",
         },
         {
           text: "Songs",
@@ -91,7 +109,45 @@ export default {
           value: "songs",
         },
       ],
+      artistsItems: [],
+      songsItems: [],
     };
+  },
+  methods: {
+    getUrl(image) {
+      try {
+        return URL.createObjectURL(image);
+      } catch (_) {
+        return image;
+      }
+    },
+    getTopSongs() {
+      const token = localStorage.getItem("token");
+      fetch("http://localhost:3000/songs/all/top", {
+        method: "GET",
+        headers: {
+          // "Content-Type": "application/json",
+          token: token,
+        },
+      }).then(async (response) => {
+        let res = await response.json();
+        console.log(res);
+        this.songsItems = res;
+      });
+    },
+    getTopArtists() {
+      const token = localStorage.getItem("token");
+      fetch("http://localhost:3000/songs/artists/all/top", {
+        method: "GET",
+        headers: {
+          // "Content-Type": "application/json",
+          token: token,
+        },
+      }).then(async (response) => {
+        let res = await response.json();
+        this.artistsItems = res;
+      });
+    },
   },
   mounted() {
     fetch("http://localhost:3000/")
@@ -102,7 +158,6 @@ export default {
         return data;
       })
       .catch((err) => console.log(err));
-    // console.log(res);
   },
   async created() {
     const token = localStorage.getItem("token");
@@ -113,6 +168,8 @@ export default {
     if (!authenticated || !token) {
       this.$router.push({ path: "/signup" });
     }
+    this.getTopArtists();
+    this.getTopSongs();
   },
 };
 </script>

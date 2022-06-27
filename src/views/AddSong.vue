@@ -168,19 +168,18 @@ export default {
     redirectBack() {
       this.$router.push("/");
     },
-    // getUrl(image) {
-    //   try{
-    //     return URL.createObjectURL(image);        
-    //   } 
-    //   catch(_){
-    //     return image;
-    //   }
-    // },
 
     // executed when image is added
     async imageCallback(image) {
       if (!image) {
         this.postBody.image = null;
+      }
+      if (image.size / 1024 > 100) {
+        this.snackbar.visible = true;
+        this.snackbar.color = "red";
+        this.snackbar.errMsg = "File Size cannot be more than 100kb";
+        this.songForm = false;
+        return;
       }
       this.postBody.image = await imageBase64(image);
     },
@@ -201,7 +200,7 @@ export default {
             this.snackbar.visible = true;
             this.snackbar.color = "green";
             this.snackbar.errMsg = "Song added successfully";
-            // console.log(res);
+            this.$router.push("/");
           } else if (response.status === 409) {
             this.snackbar.visible = true;
             this.snackbar.color = "red";
