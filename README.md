@@ -2,6 +2,7 @@
 The main tech-stacks and frameworks used to create this project are VUEJS and the Vuetify Library for the front end, Nodejs and Expressjs for the back end, PostgreSQL for the database, and JWT authorization.
 
 Backend Repo Link- https://github.com/vaidikg20000/music-app-backend .
+Hosted App- https://music-app-vaidikg20000.vercel.app/
 
 ## Project Illustration
 
