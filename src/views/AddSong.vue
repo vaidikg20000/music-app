@@ -186,7 +186,7 @@ export default {
 
     async saveNewSong() {
       const token = localStorage.getItem("token");
-      fetch("http://localhost:3000/songs/add", {
+      fetch("https://music-journal-backend.herokuapp.com/songs/add", {
         method: "POST",
         body: JSON.stringify(this.postBody),
         headers: {
@@ -213,7 +213,7 @@ export default {
     fetchArtists(payload) {
       //api call
       const token = localStorage.getItem("token");
-      fetch("http://localhost:3000/songs/artists/all", {
+      fetch("https://music-journal-backend.herokuapp.com/songs/artists/all", {
         method: "GET",
         headers: {
           // "Content-Type": "application/json",

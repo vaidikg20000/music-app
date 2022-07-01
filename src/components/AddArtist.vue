@@ -134,7 +134,7 @@ export default {
     },
     saveArtist() {
       const token = localStorage.getItem("token");
-      fetch("http://localhost:3000/songs/artists/add", {
+      fetch("https://music-journal-backend.herokuapp.com/songs/artists/add", {
         method: "POST",
         body: JSON.stringify({
           artist_name: this.postBody.artistName,

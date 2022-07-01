@@ -138,7 +138,7 @@ export default {
   },
   methods: {
     saveItems() {
-      fetch("http://localhost:3000/auth/signup", {
+      fetch("https://music-journal-backend.herokuapp.com/auth/signup", {
         method: "POST",
         body: JSON.stringify({
           username: this.username,

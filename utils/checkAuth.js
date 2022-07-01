@@ -1,11 +1,14 @@
 async function isAuthenticated() {
   const token = localStorage.getItem("token");
-  const res = await fetch("http://localhost:3000/auth/is-authenticated/", {
-    headers: {
-      token: token,
-    },
-    method: "GET",
-  });
+  const res = await fetch(
+    "https://music-journal-backend.herokuapp.com/auth/is-authenticated/",
+    {
+      headers: {
+        token: token,
+      },
+      method: "GET",
+    }
+  );
   const parseResponse = await res.json();
   if (parseResponse === true) {
     return true;
@@ -14,4 +17,4 @@ async function isAuthenticated() {
   }
 }
 
-export {isAuthenticated}
+export { isAuthenticated };

@@ -39,9 +39,8 @@
           {{ moment(item.date_of_release).format("LL") }}
         </template>
         <template v-slot:item.ratings="{ item }">
-          {{ item.ratings }} ⭐
+          {{ item.ratings }}/5 ⭐
         </template>
-        
       </v-data-table>
     </v-card>
     <v-card style="margin: 10px 40px 10px 40px">
@@ -103,7 +102,7 @@ export default {
           value: "artist_name",
         },
         {
-          text: "Date",
+          text: "Date of Birth",
           align: "start",
           value: "dob",
         },
@@ -127,7 +126,7 @@ export default {
     },
     getTopSongs() {
       const token = localStorage.getItem("token");
-      fetch("http://localhost:3000/songs/all/top", {
+      fetch("https://music-journal-backend.herokuapp.com/songs/all/top", {
         method: "GET",
         headers: {
           // "Content-Type": "application/json",
@@ -141,20 +140,23 @@ export default {
     },
     getTopArtists() {
       const token = localStorage.getItem("token");
-      fetch("http://localhost:3000/songs/artists/all/top", {
-        method: "GET",
-        headers: {
-          // "Content-Type": "application/json",
-          token: token,
-        },
-      }).then(async (response) => {
+      fetch(
+        "https://music-journal-backend.herokuapp.com/songs/artists/all/top",
+        {
+          method: "GET",
+          headers: {
+            // "Content-Type": "application/json",
+            token: token,
+          },
+        }
+      ).then(async (response) => {
         let res = await response.json();
         this.artistsItems = res;
       });
     },
   },
   mounted() {
-    fetch("http://localhost:3000/")
+    fetch("https://music-journal-backend.herokuapp.com/")
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
