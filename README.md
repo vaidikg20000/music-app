@@ -3,6 +3,8 @@ The main tech-stacks and frameworks used to create this project are VUEJS and th
 
 Backend Repo Link- https://github.com/vaidikg20000/music-app-backend .
 
+Hosted App- https://music-app-vaidikg20000.vercel.app/
+
 ## Project Illustration
 
 
