@@ -152,7 +152,7 @@ export default {
     },
     deleteSong(id) {
       const token = localStorage.getItem("token");
-      fetch("http://localhost:3000/songs/delete/" + id, {
+      fetch("https://music-journal-backend.herokuapp.com/songs/delete/" + id, {
         method: "DELETE",
         headers: {
           // "Content-Type": "application/json",
@@ -170,7 +170,7 @@ export default {
     },
     getTopSongs() {
       const token = localStorage.getItem("token");
-      fetch("http://localhost:3000/songs/all/top", {
+      fetch("https://music-journal-backend.herokuapp.com/songs/all/top", {
         method: "GET",
         headers: {
           // "Content-Type": "application/json",
@@ -184,20 +184,23 @@ export default {
     },
     getTopArtists() {
       const token = localStorage.getItem("token");
-      fetch("http://localhost:3000/songs/artists/all/top", {
-        method: "GET",
-        headers: {
-          // "Content-Type": "application/json",
-          token: token,
-        },
-      }).then(async (response) => {
+      fetch(
+        "https://music-journal-backend.herokuapp.com/songs/artists/all/top",
+        {
+          method: "GET",
+          headers: {
+            // "Content-Type": "application/json",
+            token: token,
+          },
+        }
+      ).then(async (response) => {
         let res = await response.json();
         this.artistsItems = res;
       });
     },
   },
   mounted() {
-    fetch("http://localhost:3000/")
+    fetch("https://music-journal-backend.herokuapp.com/")
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
