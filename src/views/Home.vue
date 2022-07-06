@@ -41,6 +41,9 @@
         <template v-slot:item.ratings="{ item }">
           {{ item.ratings }}/5 ⭐
         </template>
+        <template v-slot:item.actions="{ item }">
+          <v-btn color="red" @click="deleteSong(item.song_id)">Delete</v-btn>
+        </template>
       </v-data-table>
     </v-card>
     <v-card style="margin: 10px 40px 10px 40px">
@@ -56,6 +59,19 @@
         </template>
       </v-data-table>
     </v-card>
+    <v-snackbar v-model="snackbar.visible" :color="snackbar.color">
+      {{ snackbar.errMsg }}
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          color="white"
+          text
+          v-bind="attrs"
+          @click="snackbar.visible = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
   </div>
 </template>
 <script>
@@ -67,6 +83,11 @@ export default {
     return {
       search: "",
       moment: moment,
+      snackbar: {
+        visible: false,
+        errMsg: "",
+        color: "",
+      },
       songsHeaders: [
         {
           text: "Artwork",
@@ -93,6 +114,11 @@ export default {
           text: "Rate",
           align: "start",
           value: "ratings",
+        },
+        {
+          text: "Actions",
+          align: "start",
+          value: "actions",
         },
       ],
       artistsHeaders: [
@@ -124,9 +150,27 @@ export default {
         return image;
       }
     },
+    deleteSong(id) {
+      const token = localStorage.getItem("token");
+      fetch("http://localhost:3000/songs/delete/" + id, {
+        method: "DELETE",
+        headers: {
+          // "Content-Type": "application/json",
+          token: token,
+        },
+      }).then(async (response) => {
+        let res = await response.json();
+        if (response.status === 200) {
+          this.snackbar.visible = true;
+          this.snackbar.color = "green";
+          this.snackbar.errMsg = res;
+          this.getTopSongs();
+        }
+      });
+    },
     getTopSongs() {
       const token = localStorage.getItem("token");
-      fetch("https://music-journal-backend.herokuapp.com/songs/all/top", {
+      fetch("http://localhost:3000/songs/all/top", {
         method: "GET",
         headers: {
           // "Content-Type": "application/json",
@@ -140,23 +184,20 @@ export default {
     },
     getTopArtists() {
       const token = localStorage.getItem("token");
-      fetch(
-        "https://music-journal-backend.herokuapp.com/songs/artists/all/top",
-        {
-          method: "GET",
-          headers: {
-            // "Content-Type": "application/json",
-            token: token,
-          },
-        }
-      ).then(async (response) => {
+      fetch("http://localhost:3000/songs/artists/all/top", {
+        method: "GET",
+        headers: {
+          // "Content-Type": "application/json",
+          token: token,
+        },
+      }).then(async (response) => {
         let res = await response.json();
         this.artistsItems = res;
       });
     },
   },
   mounted() {
-    fetch("https://music-journal-backend.herokuapp.com/")
+    fetch("http://localhost:3000/")
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
