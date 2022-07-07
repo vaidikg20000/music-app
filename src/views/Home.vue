@@ -47,7 +47,7 @@
         </template>
       </v-data-table>
     </v-card>
-    <v-card style="margin: 10px 40px 10px 40px">
+    <v-card style="margin: 60px 40px 10px 40px">
       <v-row align="center">
         <v-col cols="4" align-self="center">
           <v-card-title style="padding:20px">Top 10 Artists</v-card-title>
