@@ -23,6 +23,7 @@
       </v-row>
       <v-data-table
         :headers="songsHeaders"
+        :search="search"
         :items="songsItems"
         hide-default-footer
         disable-pagination
@@ -47,10 +48,26 @@
       </v-data-table>
     </v-card>
     <v-card style="margin: 10px 40px 10px 40px">
-      <v-card-title>Top 10 Artists</v-card-title>
+      <v-row align="center">
+        <v-col cols="4" align-self="center">
+          <v-card-title style="padding:20px">Top 10 Artists</v-card-title>
+        </v-col>
+        <v-col></v-col>
+        <v-col cols="3">
+          <v-text-field
+            v-model="artistSearch"
+            append-icon="mdi-magnify"
+            label="Search"
+            single-line
+            hide-details
+            style="padding:20px"
+          ></v-text-field>
+        </v-col>
+      </v-row>
       <v-data-table
         :headers="artistsHeaders"
         :items="artistsItems"
+        :search="artistSearch"
         hide-default-footer
         disable-pagination
       >
@@ -82,6 +99,7 @@ export default {
   data() {
     return {
       search: "",
+      artistSearch: "",
       moment: moment,
       snackbar: {
         visible: false,
@@ -118,6 +136,7 @@ export default {
         {
           text: "Actions",
           align: "start",
+          sortable: false,
           value: "actions",
         },
       ],
@@ -165,6 +184,7 @@ export default {
           this.snackbar.color = "green";
           this.snackbar.errMsg = res;
           this.getTopSongs();
+          this.getTopArtists();
         }
       });
     },
