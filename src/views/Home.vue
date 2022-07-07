@@ -143,17 +143,17 @@ export default {
       artistsHeaders: [
         {
           text: "Artists",
-          align: "start",
+          align: "center",
           value: "artist_name",
         },
         {
           text: "Date of Birth",
-          align: "start",
+          align: "center",
           value: "dob",
         },
         {
           text: "Songs",
-          align: "start",
+          align: "center",
           value: "songs",
         },
       ],
